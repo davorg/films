@@ -2,6 +2,8 @@
   --bg: #0b1020;
   --card: rgba(255, 255, 255, 0.06);
   --card-2: rgba(255, 255, 255, 0.09);
+  --card-min: 200px;
+  --card-max: 360px;
   --text: rgba(255, 255, 255, 0.92);
   --muted: rgba(255, 255, 255, 0.72);
   --muted-2: rgba(255, 255, 255, 0.55);
@@ -27,7 +29,7 @@ body {
 }
 
 .container {
-  width: min(1100px, 92vw);
+  width: min(1400px, 92vw);
   margin: 0 auto;
 }
 
@@ -110,8 +112,9 @@ h2 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), var(--card-max)));
   gap: 14px;
+  justify-content: start;
 }
 
 .card {
@@ -148,6 +151,7 @@ h2 {
   flex-direction: column;
   gap: 6px;
   flex: 1;
+  min-width: 0;
 }
 
 .title {
