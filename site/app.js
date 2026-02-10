@@ -1,7 +1,22 @@
 async function load() {
-  const res = await fetch('releases.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error(`Failed to load releases.json: ${res.status}`);
-  return await res.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const res = await fetch('releases.json', { 
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`Failed to load releases.json: ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout: Failed to load releases.json');
+    }
+    throw error;
+  }
 }
 
 function monthKey(isoDate) {
@@ -15,21 +30,28 @@ function fmtMonthHeader(yyyyMm) {
   return dt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 }
 
-function mountUpcomingByMonth(gridId, items, emptyId, metaId) {
+function updateMetaAndEmpty(gridId, items, emptyId, metaId) {
   const grid = document.getElementById(gridId);
   const empty = document.getElementById(emptyId);
   const meta = document.getElementById(metaId);
 
-  grid.innerHTML = '';
+  grid.replaceChildren();
 
   if (!items.length) {
     empty.hidden = false;
     meta.textContent = '0 films';
-    return;
+    return false;
   }
 
   empty.hidden = true;
   meta.textContent = `${items.length} film${items.length === 1 ? '' : 's'}`;
+  return true;
+}
+
+function mountUpcomingByMonth(gridId, items, emptyId, metaId) {
+  if (!updateMetaAndEmpty(gridId, items, emptyId, metaId)) return;
+
+  const grid = document.getElementById(gridId);
 
   // items are already sorted by date by the generator
   const groups = new Map();
@@ -39,7 +61,10 @@ function mountUpcomingByMonth(gridId, items, emptyId, metaId) {
     groups.get(key).push(m);
   }
 
-  for (const [key, films] of groups.entries()) {
+  // Sort month keys to ensure consistent ordering
+  const sortedKeys = Array.from(groups.keys()).sort();
+  for (const key of sortedKeys) {
+    const films = groups.get(key);
     const header = el('h3', { class: 'month-header' }, [fmtMonthHeader(key)]);
     const monthGrid = el('div', { class: 'grid' }, []);
     for (const film of films) monthGrid.appendChild(renderCard(film, 'upcoming'));
@@ -52,7 +77,10 @@ function el(tag, attrs = {}, children = []) {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (k === 'class') n.className = v;
-    else if (k === 'html') n.innerHTML = v;
+    else if (k === 'html') {
+      // Security note: Only use with trusted, sanitized content
+      n.innerHTML = v;
+    }
     else n.setAttribute(k, v);
   }
   for (const c of children) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
@@ -88,7 +116,7 @@ function renderCard(movie, mode) {
   const line = el('div', { class: 'line' }, pills);
 
   const links = el('div', { class: 'links' }, [
-    el('a', { class: 'link', href: movie.tmdb_url, target: '_blank', rel: 'noreferrer' }, ['TMDb ↗'])
+    el('a', { class: 'link', href: movie.tmdb_url, target: '_blank', rel: 'noopener noreferrer' }, ['TMDb ↗'])
   ]);
 
   return el('article', { class: 'card' }, [
@@ -102,19 +130,9 @@ function renderCard(movie, mode) {
 }
 
 function mount(gridId, items, mode, emptyId, metaId) {
+  if (!updateMetaAndEmpty(gridId, items, emptyId, metaId)) return;
+
   const grid = document.getElementById(gridId);
-  const empty = document.getElementById(emptyId);
-  const meta = document.getElementById(metaId);
-
-  grid.innerHTML = '';
-  if (!items.length) {
-    empty.hidden = false;
-    meta.textContent = '0 films';
-    return;
-  }
-  empty.hidden = true;
-  meta.textContent = `${items.length} film${items.length === 1 ? '' : 's'}`;
-
   for (const m of items) grid.appendChild(renderCard(m, mode));
 }
 
