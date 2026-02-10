@@ -1,5 +1,10 @@
 /**
  * Tests for site/app.js
+ * 
+ * Note: The app.js file is an IIFE (Immediately Invoked Function Expression)
+ * that doesn't export its functions. We use regex extraction and eval to test
+ * individual functions. This approach is fragile but avoids modifying the
+ * production code structure.
  */
 
 // Read the app.js file and extract the functions
@@ -10,25 +15,39 @@ const path = require('path');
 const appJsPath = path.join(__dirname, '../site/app.js');
 const appJsContent = fs.readFileSync(appJsPath, 'utf8');
 
-// Extract functions by evaluating the code in a controlled way
-// We need to extract individual functions since the file is an IIFE
-
-// Helper to extract and eval a function
-function extractFunction(code, functionName) {
-  const regex = new RegExp(`function\\s+${functionName}\\s*\\([^)]*\\)\\s*{[\\s\\S]*?(?=\\nfunction|\\n\\(async|$)`, 'm');
-  const match = code.match(regex);
-  if (match) {
-    return eval(`(${match[0]})`);
+// Helper to safely extract and eval a function
+function safeExtractFunction(code, functionName, pattern) {
+  const match = code.match(pattern);
+  if (!match || !match[0]) {
+    throw new Error(`Could not extract function ${functionName} from app.js`);
   }
-  return null;
+  return eval(`(${match[0]})`);
 }
 
-// Extract functions manually since they're in a closure
-const monthKey = eval(`(${appJsContent.match(/function monthKey\(isoDate\) \{[\s\S]*?\n\}/)[0]})`);
-const fmtMonthHeader = eval(`(${appJsContent.match(/function fmtMonthHeader\(yyyyMm\) \{[\s\S]*?\n\}/)[0]})`);
-const fmtDate = eval(`(${appJsContent.match(/function fmtDate\(isoDate\) \{[\s\S]*?\n\}/)[0]})`);
-const el = eval(`(${appJsContent.match(/function el\(tag, attrs = \{\}, children = \[\]\) \{[\s\S]*?\n\}/)[0]})`);
+// Extract functions with null safety checks
+const monthKey = safeExtractFunction(
+  appJsContent, 
+  'monthKey',
+  /function monthKey\(isoDate\) \{[\s\S]*?\n\}/
+);
 
+const fmtMonthHeader = safeExtractFunction(
+  appJsContent,
+  'fmtMonthHeader', 
+  /function fmtMonthHeader\(yyyyMm\) \{[\s\S]*?\n\}/
+);
+
+const fmtDate = safeExtractFunction(
+  appJsContent,
+  'fmtDate',
+  /function fmtDate\(isoDate\) \{[\s\S]*?\n\}/
+);
+
+const el = safeExtractFunction(
+  appJsContent,
+  'el',
+  /function el\(tag, attrs = \{\}, children = \[\]\) \{[\s\S]*?\n\}/
+);
 describe('app.js - monthKey', () => {
   test('extracts year and month from ISO date', () => {
     expect(monthKey('2026-04-17')).toBe('2026-04');
@@ -151,7 +170,11 @@ describe('app.js - load function', () => {
     });
 
     // Extract and test the load function
-    const loadFn = eval(`(${appJsContent.match(/async function load\(\) \{[\s\S]*?\n\}/)[0]})`);
+    const loadFn = safeExtractFunction(
+      appJsContent,
+      'load',
+      /async function load\(\) \{[\s\S]*?\n\}/
+    );
     const result = await loadFn();
 
     expect(result).toEqual(mockData);
@@ -167,27 +190,28 @@ describe('app.js - load function', () => {
       status: 404
     });
 
-    const loadFn = eval(`(${appJsContent.match(/async function load\(\) \{[\s\S]*?\n\}/)[0]})`);
+    const loadFn = safeExtractFunction(
+      appJsContent,
+      'load',
+      /async function load\(\) \{[\s\S]*?\n\}/
+    );
     
     await expect(loadFn()).rejects.toThrow('Failed to load releases.json: 404');
   });
 
-  test('handles timeout', async () => {
-    // Mock a slow response
-    global.fetch.mockImplementationOnce(() => 
-      new Promise((resolve) => {
-        // Simulate a timeout by never resolving
-        // The AbortController should abort it
-      })
+  test('has timeout configuration', () => {
+    // This test verifies that the load function includes timeout logic
+    // Actual timeout testing would require complex async timing control
+    const loadFn = safeExtractFunction(
+      appJsContent,
+      'load',
+      /async function load\(\) \{[\s\S]*?\n\}/
     );
 
-    const loadFn = eval(`(${appJsContent.match(/async function load\(\) \{[\s\S]*?\n\}/)[0]})`);
-
-    // This test is tricky because we need to wait for the abort
-    // For simplicity, we'll just verify the function exists and has timeout logic
     expect(loadFn).toBeDefined();
-    expect(loadFn.toString()).toContain('abort');
-    expect(loadFn.toString()).toContain('10000');
+    const fnString = loadFn.toString();
+    expect(fnString).toContain('abort');
+    expect(fnString).toContain('10000'); // 10 second timeout
   });
 });
 

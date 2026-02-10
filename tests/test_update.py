@@ -9,6 +9,9 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 # Import the update script by reading and executing it
+# Note: The bin/update file has no .py extension (it's an executable script),
+# so we use dynamic execution instead of standard Python imports.
+# This approach is necessary to test the script without modifying its structure.
 _bin_path = Path(__file__).resolve().parents[1] / "bin" / "update"
 with open(_bin_path, 'r') as f:
     _code = f.read()
