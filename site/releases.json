@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-02-10T14:42:01+00:00",
+  "upcoming": [
+    {
+      "tmdb_id": 1316092,
+      "title": "\u201cWuthering Heights\u201d",
+      "release_date": "2026-02-13",
+      "poster_url": "https://image.tmdb.org/t/p/w342/ywRO5dyE8RyyXJd6cvd69jLZeic.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1316092"
+    },
+    {
+      "tmdb_id": 687163,
+      "title": "Project Hail Mary",
+      "release_date": "2026-03-19",
+      "poster_url": "https://image.tmdb.org/t/p/w342/iOb2fjXLbpJgyQXe46n1WtGCnaa.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/687163"
+    },
+    {
+      "tmdb_id": 1275779,
+      "title": "Disclosure Day",
+      "release_date": "2026-06-12",
+      "poster_url": "https://image.tmdb.org/t/p/w342/AnJ8IQJI23hNpYXVNaythu061Ru.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1275779"
+    },
+    {
+      "tmdb_id": 1081003,
+      "title": "Supergirl",
+      "release_date": "2026-06-26",
+      "poster_url": "https://image.tmdb.org/t/p/w342/niSvU02l2BONH9ivubV6K1a5QiK.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1081003"
+    },
+    {
+      "tmdb_id": 969681,
+      "title": "Spider-Man: Brand New Day",
+      "release_date": "2026-07-31",
+      "poster_url": "https://image.tmdb.org/t/p/w342/9JCQtDCSpPR2ld55yNlEg1VwcQo.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/969681"
+    },
+    {
+      "tmdb_id": 1003596,
+      "title": "Avengers: Doomsday",
+      "release_date": "2026-12-18",
+      "poster_url": "https://image.tmdb.org/t/p/w342/8HkIe2i4ScpCkcX9SzZ9IPasqWV.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1003596"
+    }
+  ],
+  "tbd": [
+    {
+      "tmdb_id": 911916,
+      "title": "Spider-Man: Beyond the Spider-Verse",
+      "release_date": null,
+      "poster_url": "https://image.tmdb.org/t/p/w342/9PIhQqqI6Q4a5YjwMjxvzZcPJhf.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/911916"
+    }
+  ],
+  "released": [
+    {
+      "tmdb_id": 1272837,
+      "title": "28 Years Later: The Bone Temple",
+      "release_date": "2026-01-14",
+      "poster_url": "https://image.tmdb.org/t/p/w342/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1272837"
+    }
+  ]
+}

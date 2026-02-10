@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+import os
+import json
+import urllib.request
+import urllib.parse
+import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+WATCHLIST = ROOT / "watchlist.json"
+OUT_DIR = ROOT / "site"
+OUT_JSON = OUT_DIR / "releases.json"
+OUT_ICS = OUT_DIR / "releases.ics"
+
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "").strip()
+
+TMDB_API = "https://api.themoviedb.org/3"
+IMG_BASE = "https://image.tmdb.org/t/p/w342"
+
+def http_get_json(url: str) -> dict:
+  req = urllib.request.Request(url, headers={"Accept": "application/json"})
+  with urllib.request.urlopen(req, timeout=30) as resp:
+    raw = resp.read().decode("utf-8")
+  return json.loads(raw)
+
+def tmdb_url(path: str, params: dict) -> str:
+  params = dict(params)
+  params["api_key"] = TMDB_API_KEY
+  return f"{TMDB_API}{path}?{urllib.parse.urlencode(params)}"
+
+def parse_iso_date(s: str) -> datetime.date:
+  # TMDb gives e.g. "2026-04-17T00:00:00.000Z"
+  return datetime.date.fromisoformat(s[:10])
+
+def choose_gb_theatrical_date(release_dates_payload: dict, today: datetime.date):
+  # payload: { "id": ..., "results": [ { "iso_3166_1": "GB", "release_dates": [ ... ] } ] }
+  gb = None
+  for r in release_dates_payload.get("results", []):
+    if r.get("iso_3166_1") == "GB":
+      gb = r
+      break
+  if not gb:
+    return None, None
+
+  theatrical = []
+  for rd in gb.get("release_dates", []):
+    # type 3 = Theatrical
+    if rd.get("type") == 3 and rd.get("release_date"):
+      try:
+        d = parse_iso_date(rd["release_date"])
+        theatrical.append(d)
+      except Exception:
+        pass
+
+  if not theatrical:
+    return None, None
+
+  theatrical.sort()
+  future = [d for d in theatrical if d >= today]
+  if future:
+    return future[0].isoformat(), "upcoming"
+  else:
+    return theatrical[0].isoformat(), "released"
+
+def build_ics_events(movies, dtstamp_utc: str) -> str:
+  lines = []
+  lines.append("BEGIN:VCALENDAR")
+  lines.append("VERSION:2.0")
+  lines.append("PRODID:-//Film Release Tracker//EN")
+  lines.append("CALSCALE:GREGORIAN")
+  lines.append("METHOD:PUBLISH")
+
+  for m in movies:
+    # all-day event: DTSTART/DTEND as VALUE=DATE, DTEND is next day
+    y, mo, d = map(int, m["release_date"].split("-"))
+    start = datetime.date(y, mo, d)
+    end = start + datetime.timedelta(days=1)
+
+    uid = f"tmdb-{m['tmdb_id']}@film-release-tracker"
+    summary = f"{m['title']} (UK theatrical release)"
+    desc = f"TMDb: {m['tmdb_url']}"
+
+    def yyyymmdd(dt: datetime.date) -> str:
+      return f"{dt.year:04d}{dt.month:02d}{dt.day:02d}"
+
+    # ICS escaping for text fields
+    def ics_escape(s: str) -> str:
+      return s.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
+
+    lines.append("BEGIN:VEVENT")
+    lines.append(f"UID:{ics_escape(uid)}")
+    lines.append(f"DTSTAMP:{dtstamp_utc}")
+    lines.append(f"DTSTART;VALUE=DATE:{yyyymmdd(start)}")
+    lines.append(f"DTEND;VALUE=DATE:{yyyymmdd(end)}")
+    lines.append(f"SUMMARY:{ics_escape(summary)}")
+    lines.append(f"DESCRIPTION:{ics_escape(desc)}")
+    lines.append("STATUS:CONFIRMED")
+    lines.append("TRANSP:TRANSPARENT")
+    lines.append("END:VEVENT")
+
+  lines.append("END:VCALENDAR")
+  return "\n".join(lines) + "\n"
+
+def main():
+  if not TMDB_API_KEY:
+    raise SystemExit("TMDB_API_KEY is not set. Add it as an env var (or GitHub Actions secret).")
+
+  if not WATCHLIST.exists():
+    raise SystemExit("watchlist.json not found")
+
+  watch = json.loads(WATCHLIST.read_text(encoding="utf-8"))
+  if not isinstance(watch, list):
+    raise SystemExit("watchlist.json must be a JSON array")
+
+  today = datetime.date.today()
+  dtstamp_utc = (
+    datetime.datetime
+    .now(datetime.UTC)
+    .replace(microsecond=0)
+    .strftime("%Y%m%dT%H%M%SZ")
+  )
+
+  upcoming = []
+  released = []
+  tbd = []
+
+  for item in watch:
+    tmdb_id = item.get("tmdb_id")
+    if not tmdb_id:
+      continue
+
+    details = http_get_json(tmdb_url(f"/movie/{tmdb_id}", {"language": "en-GB"}))
+    releases = http_get_json(tmdb_url(f"/movie/{tmdb_id}/release_dates", {}))
+
+    chosen_date, bucket = choose_gb_theatrical_date(releases, today)
+
+    movie = {
+      "tmdb_id": tmdb_id,
+      "title": details.get("title") or details.get("original_title") or item.get("title_hint") or f"TMDb {tmdb_id}",
+      "release_date": chosen_date,  # may be None
+      "poster_url": (IMG_BASE + details["poster_path"]) if details.get("poster_path") else None,
+      "tmdb_url": f"https://www.themoviedb.org/movie/{tmdb_id}",
+    }
+
+    if bucket == "upcoming":
+      upcoming.append(movie)
+    elif bucket == "released":
+      released.append(movie)
+    else:
+      # no GB theatrical date
+      movie["release_date"] = None
+      tbd.append(movie)
+
+  # Sort buckets
+  upcoming.sort(key=lambda m: m["release_date"])
+  released.sort(key=lambda m: m["release_date"], reverse=True)
+  tbd.sort(key=lambda m: m["title"].lower())
+
+  OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+  out = {
+    "generated_at": (
+      datetime.datetime
+      .now(datetime.UTC)
+      .replace(microsecond=0)
+      .isoformat()
+    ),
+    "upcoming": upcoming,
+    "tbd": tbd,
+    "released": released,
+  }
+  OUT_JSON.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
+
+  # ICS: upcoming only (TBD excluded by design)
+  OUT_ICS.write_text(build_ics_events(upcoming, dtstamp_utc), encoding="utf-8")
+
+  print(f"Wrote {OUT_JSON}")
+  print(f"Wrote {OUT_ICS}")
+
+if __name__ == "__main__":
+  main()
