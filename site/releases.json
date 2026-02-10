@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T14:42:01+00:00",
+  "generated_at": "2026-02-10T15:09:07+00:00",
   "upcoming": [
     {
       "tmdb_id": 1316092,
@@ -7,6 +7,34 @@
       "release_date": "2026-02-13",
       "poster_url": "https://image.tmdb.org/t/p/w342/ywRO5dyE8RyyXJd6cvd69jLZeic.jpg",
       "tmdb_url": "https://www.themoviedb.org/movie/1316092"
+    },
+    {
+      "tmdb_id": 1160360,
+      "title": "If I Had Legs I'd Kick You",
+      "release_date": "2026-02-20",
+      "poster_url": "https://image.tmdb.org/t/p/w342/va0TQ9WprMXRqQAzY56vyqY0Yd5.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1160360"
+    },
+    {
+      "tmdb_id": 1401281,
+      "title": "The Testament of Ann Lee",
+      "release_date": "2026-02-20",
+      "poster_url": "https://image.tmdb.org/t/p/w342/hU1frHnDwJQ3YDERVppxTLvHjc7.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1401281"
+    },
+    {
+      "tmdb_id": 1151272,
+      "title": "Sir\u0101t",
+      "release_date": "2026-02-27",
+      "poster_url": "https://image.tmdb.org/t/p/w342/bzBtsLi17rK4G6kDvOXfUZfAhca.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1151272"
+    },
+    {
+      "tmdb_id": 1159831,
+      "title": "The Bride!",
+      "release_date": "2026-03-06",
+      "poster_url": "https://image.tmdb.org/t/p/w342/vu1cbpWza1F0OSUTqVMlJYcNgC2.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1159831"
     },
     {
       "tmdb_id": 687163,
@@ -30,6 +58,13 @@
       "tmdb_url": "https://www.themoviedb.org/movie/1081003"
     },
     {
+      "tmdb_id": 1368337,
+      "title": "The Odyssey",
+      "release_date": "2026-07-17",
+      "poster_url": "https://image.tmdb.org/t/p/w342/pe5cCoX5iIb5IWKPsbPkCwjLFHt.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1368337"
+    },
+    {
       "tmdb_id": 969681,
       "title": "Spider-Man: Brand New Day",
       "release_date": "2026-07-31",
@@ -42,9 +77,23 @@
       "release_date": "2026-12-18",
       "poster_url": "https://image.tmdb.org/t/p/w342/8HkIe2i4ScpCkcX9SzZ9IPasqWV.jpg",
       "tmdb_url": "https://www.themoviedb.org/movie/1003596"
+    },
+    {
+      "tmdb_id": 1170608,
+      "title": "Dune: Part Three",
+      "release_date": "2026-12-18",
+      "poster_url": "https://image.tmdb.org/t/p/w342/hvoFxd5LPvhojyfryWSeGKoIwJE.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1170608"
     }
   ],
   "tbd": [
+    {
+      "tmdb_id": 1003598,
+      "title": "Avengers: Secret Wars",
+      "release_date": null,
+      "poster_url": "https://image.tmdb.org/t/p/w342/f0YBuh4hyiAheXhh4JnJWoKi9g5.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/1003598"
+    },
     {
       "tmdb_id": 911916,
       "title": "Spider-Man: Beyond the Spider-Verse",
