@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T15:09:07+00:00",
+  "generated_at": "2026-02-10T15:13:58+00:00",
   "upcoming": [
     {
       "tmdb_id": 1316092,
@@ -103,6 +103,13 @@
     }
   ],
   "released": [
+    {
+      "tmdb_id": 524635,
+      "title": "The Chronology of Water",
+      "release_date": "2026-02-06",
+      "poster_url": "https://image.tmdb.org/t/p/w342/pU3GZI6C9lxzxUnBccIQLThDLVY.jpg",
+      "tmdb_url": "https://www.themoviedb.org/movie/524635"
+    },
     {
       "tmdb_id": 1272837,
       "title": "28 Years Later: The Bone Temple",
