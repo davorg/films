@@ -2,7 +2,6 @@
 
 This repo builds a small static website and an `.ics` calendar feed for **UK theatrical release dates** for films you care about.
 
-**Your rules (implemented):**
 - Only **GB (UK) theatrical** releases (TMDb release type `3 = Theatrical`).
 - Calendar events are **all-day**.
 - Films with no UK theatrical date are shown under **TBD** and are **omitted** from the `.ics`.
