@@ -4,6 +4,50 @@ async function load() {
   return await res.json();
 }
 
+function monthKey(isoDate) {
+  // "YYYY-MM-DD" -> "YYYY-MM"
+  return isoDate.slice(0, 7);
+}
+
+function fmtMonthHeader(yyyyMm) {
+  const [y, m] = yyyyMm.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, 1));
+  return dt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+}
+
+function mountUpcomingByMonth(gridId, items, emptyId, metaId) {
+  const grid = document.getElementById(gridId);
+  const empty = document.getElementById(emptyId);
+  const meta = document.getElementById(metaId);
+
+  grid.innerHTML = '';
+
+  if (!items.length) {
+    empty.hidden = false;
+    meta.textContent = '0 films';
+    return;
+  }
+
+  empty.hidden = true;
+  meta.textContent = `${items.length} film${items.length === 1 ? '' : 's'}`;
+
+  // items are already sorted by date by the generator
+  const groups = new Map();
+  for (const m of items) {
+    const key = monthKey(m.release_date);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(m);
+  }
+
+  for (const [key, films] of groups.entries()) {
+    const header = el('h3', { class: 'month-header' }, [fmtMonthHeader(key)]);
+    const monthGrid = el('div', { class: 'grid' }, []);
+    for (const film of films) monthGrid.appendChild(renderCard(film, 'upcoming'));
+
+    grid.appendChild(el('div', { class: 'month-block' }, [header, monthGrid]));
+  }
+}
+
 function el(tag, attrs = {}, children = []) {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -77,7 +121,7 @@ function mount(gridId, items, mode, emptyId, metaId) {
 (async () => {
   try {
     const data = await load();
-    mount('upcomingGrid', data.upcoming, 'upcoming', 'upcomingEmpty', 'metaUpcoming');
+    mountUpcomingByMonth('upcomingGrid', data.upcoming, 'upcomingEmpty', 'metaUpcoming');
     mount('tbdGrid', data.tbd, 'tbd', 'tbdEmpty', 'metaTbd');
     mount('releasedGrid', data.released, 'released', 'releasedEmpty', 'metaReleased');
   } catch (err) {

@@ -218,3 +218,23 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.95em;
 }
+
+.month-block {
+  margin-bottom: 18px;
+}
+
+.month-header {
+  margin: 6px 0 10px;
+  font-size: 14px;
+  color: var(--muted-2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.month-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
