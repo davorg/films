@@ -20,3 +20,13 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+*.cover
+
+# Node modules and npm
+node_modules/
+package-lock.json
