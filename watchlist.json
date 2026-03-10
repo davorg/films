@@ -1,11 +1,13 @@
 [
   {
     "tmdb_id": 1272837,
-    "title_hint": "28 Years Later: The Bone Temple (2026)"
+    "title_hint": "28 Years Later: The Bone Temple (2026)",
+    "seen": 1
   },
   {
     "tmdb_id": 524635,
-    "title_hint": "The Chronology of Water"
+    "title_hint": "The Chronology of Water",
+    "seen": 1
   },
   {
     "tmdb_id": 1151272,
@@ -17,7 +19,8 @@
   },
   {
     "tmdb_id": 1401281,
-    "title_hint": "The Testament of Ann Lee"
+    "title_hint": "The Testament of Ann Lee",
+    "seen": 1
   },
   {
     "tmdb_id": 687163,
