@@ -119,7 +119,7 @@ function renderCard(movie, mode) {
     el('a', { class: 'link', href: movie.tmdb_url, target: '_blank', rel: 'noopener noreferrer' }, ['TMDb ↗'])
   ]);
 
-  return el('article', { class: 'card' }, [
+  return el('article', { class: movie.seen ? 'card card--seen' : 'card' }, [
     poster,
     el('div', { class: 'content' }, [
       el('h3', { class: 'title' }, [movie.title]),

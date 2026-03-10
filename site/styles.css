@@ -242,3 +242,12 @@ code {
   gap: 22px;
 }
 
+.card--seen .poster img {
+  filter: grayscale(100%) brightness(0.5);
+  transition: filter 0.3s ease;
+}
+
+.card--seen:hover .poster img {
+  filter: none;
+}
+

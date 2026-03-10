@@ -151,6 +151,7 @@ def main():
       "release_date": chosen_date,  # may be None
       "poster_url": (IMG_BASE + details["poster_path"]) if details.get("poster_path") else None,
       "tmdb_url": f"https://www.themoviedb.org/movie/{tmdb_id}",
+      "seen": bool(item.get("seen")),
     }
 
     if bucket == "upcoming":
