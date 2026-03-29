@@ -78,6 +78,17 @@ For each TMDb movie:
 - `site/` – static site assets
 - `.github/workflows/deploy.yml` – scheduled build + Pages deploy
 
+## Multi-User Support
+
+Want to support multiple users or share this tool with others? See **[MULTI_USER_GUIDE.md](MULTI_USER_GUIDE.md)** for detailed approaches including:
+
+- Fork-based personal instances (recommended for individuals)
+- Multiple watchlists with user-specific outputs (for small teams)
+- Shared watchlists with user tags (for families/groups)
+- Configuration-based user profiles (for organizations)
+
+Each approach is documented with pros, cons, implementation examples, and migration guides.
+
 ## Licence
 
 MIT. See `LICENSE`.
