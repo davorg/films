@@ -73,7 +73,8 @@
   },
   {
     "tmdb_id": 1325734,
-    "title_hint": "The Drama"
+    "title_hint": "The Drama",
+    "seen": 1
   },
   {
     "tmdb_id": 1240889,
@@ -81,6 +82,10 @@
   },
     "tmdb_id": 1368337,
     "title_hint": "The Odyssey"
+  },
+  {
+    "tmdb_id": 1193550,
+    "title_hint": "California Schemin'"
   }
 ]
 
