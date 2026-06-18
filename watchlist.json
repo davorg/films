@@ -37,7 +37,8 @@
   },
   {
     "tmdb_id": 1275779,
-    "title_hint": "Disclosure Day (2026)"
+    "title_hint": "Disclosure Day (2026)",
+    "seen": 1
   },
   {
     "tmdb_id": 1081003,
@@ -84,6 +85,11 @@
   {
     "tmdb_id": 1193550,
     "title_hint": "California Schemin'",
+    "seen": 1
+  },
+  {
+    "tmdb_id": 1083381,
+    "title_hint": "Backrooms",
     "seen": 1
   }
 ]
