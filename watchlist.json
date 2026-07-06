@@ -42,7 +42,8 @@
   },
   {
     "tmdb_id": 1081003,
-    "title_hint": "Supergirl (2026)"
+    "title_hint": "Supergirl (2026)",
+    "seen": 1
   },
   {
     "tmdb_id": 1316092,
@@ -91,6 +92,10 @@
     "tmdb_id": 1083381,
     "title_hint": "Backrooms",
     "seen": 1
+  },
+  {
+    "tmdb_id": 858035,
+    "title_hint": "Karla and the Sun"
   }
 ]
 
