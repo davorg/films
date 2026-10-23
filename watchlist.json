@@ -105,7 +105,24 @@
   },
   {
     "tmdb_id": 1195803,
-    "title_hint": "Wicker"
+    "title_hint": "Wicker",
+    "seen": 1
+  },
+  {
+    "tmdb_id": 1281331,
+    "title_hint": "The Social Reckoning"
+  },
+  {
+    "tmdb_id": 1643567,
+    "title_hint": "Ghosts: The Possession of Button House"
+  },
+  {
+    "tmdb_id": 791523,
+    "title_hint": "Wildwood"
+  },
+  {
+    "tmdb_id": 1492198
+    "title_hint": "Artificial"
   }
 ]
 
